@@ -15,7 +15,9 @@ public class MainWindowViewModel : ViewModelBase
 
     private readonly DispatcherTimer _pomodoroTimer = new DispatcherTimer();
     private int _pomodoroSecunde = 25 * 60;
+    private int _pomodoroMinuteSetate = 25;
     private string _pomodoroStatus = "Gata de start";
+    private bool _pomodoroAInceput = false;
 
     private string _titluNou = string.Empty;
     private string _materieNoua = string.Empty;
@@ -139,6 +141,24 @@ public class MainWindowViewModel : ViewModelBase
         set => SetProperty(ref _sesiuneSelectata, value);
     }
 
+    public int PomodoroMinuteSetate
+    {
+        get => _pomodoroMinuteSetate;
+        set
+        {
+            if (value < 1)
+                value = 1;
+
+            SetProperty(ref _pomodoroMinuteSetate, value);
+
+            if (!_pomodoroTimer.IsEnabled && !_pomodoroAInceput)
+            {
+                _pomodoroSecunde = _pomodoroMinuteSetate * 60;
+                OnPropertyChanged(nameof(PomodoroDisplay));
+            }
+        }
+    }
+
     public string PomodoroDisplay => $"{_pomodoroSecunde / 60:00}:{_pomodoroSecunde % 60:00}";
 
     public string PomodoroStatus
@@ -253,9 +273,10 @@ public class MainWindowViewModel : ViewModelBase
 
     private void StartPomodoro()
     {
-        if (_pomodoroSecunde <= 0)
-            _pomodoroSecunde = 25 * 60;
+        if (!_pomodoroAInceput || _pomodoroSecunde <= 0)
+            _pomodoroSecunde = PomodoroMinuteSetate * 60;
 
+        _pomodoroAInceput = true;
         PomodoroStatus = "Timer pornit";
         _pomodoroTimer.Start();
         OnPropertyChanged(nameof(PomodoroDisplay));
@@ -270,7 +291,8 @@ public class MainWindowViewModel : ViewModelBase
     private void ResetPomodoro()
     {
         _pomodoroTimer.Stop();
-        _pomodoroSecunde = 25 * 60;
+        _pomodoroAInceput = false;
+        _pomodoroSecunde = PomodoroMinuteSetate * 60;
         PomodoroStatus = "Gata de start";
         OnPropertyChanged(nameof(PomodoroDisplay));
     }
@@ -286,6 +308,7 @@ public class MainWindowViewModel : ViewModelBase
         if (_pomodoroSecunde == 0)
         {
             _pomodoroTimer.Stop();
+            _pomodoroAInceput = false;
             PomodoroStatus = "Sesiune finalizata";
         }
     }

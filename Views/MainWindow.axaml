@@ -336,48 +336,52 @@
                         </Border>
 
                         <Border Background="#FFF4FA"
-                                BorderBrush="#F6B8D5"
-                                BorderThickness="1"
-                                Padding="18"
-                                CornerRadius="16">
-                            <StackPanel Spacing="12">
+        BorderBrush="#F6B8D5"
+        BorderThickness="1"
+        Padding="18"
+        CornerRadius="16">
+    <StackPanel Spacing="12">
 
-                                <TextBlock Text="🍅 Pomodoro Timer"
-                                           FontSize="20"
-                                           FontWeight="Bold"
-                                           Foreground="#7A2E5A"/>
+        <TextBlock Text="🍅 Pomodoro Timer"
+                   FontSize="20"
+                   FontWeight="Bold"
+                   Foreground="#7A2E5A"/>
 
-                                <TextBlock Text="{Binding PomodoroDisplay}"
-                                           FontSize="54"
-                                           FontWeight="Bold"
-                                           Foreground="#EC3F91"
-                                           HorizontalAlignment="Center"/>
+        <TextBox PlaceholderText="Minute pentru timer"
+                 Text="{Binding PomodoroMinuteSetate}"
+                 Height="42"/>
 
-                                <TextBlock Text="{Binding PomodoroStatus}"
-                                           FontSize="16"
-                                           FontWeight="Bold"
-                                           Foreground="#7A2E5A"
-                                           HorizontalAlignment="Center"/>
+        <TextBlock Text="{Binding PomodoroDisplay}"
+                   FontSize="54"
+                   FontWeight="Bold"
+                   Foreground="#EC3F91"
+                   HorizontalAlignment="Center"/>
 
-                                <Grid ColumnDefinitions="*,12,*,12,*">
-                                    <Button Grid.Column="0"
-                                            Classes="PrimaryButton"
-                                            Content="▶ Start"
-                                            Command="{Binding StartPomodoroCommand}"/>
+        <TextBlock Text="{Binding PomodoroStatus}"
+                   FontSize="16"
+                   FontWeight="Bold"
+                   Foreground="#7A2E5A"
+                   HorizontalAlignment="Center"/>
 
-                                    <Button Grid.Column="2"
-                                            Classes="SecondaryButton"
-                                            Content="⏸ Pauza"
-                                            Command="{Binding PauzaPomodoroCommand}"/>
+        <Grid ColumnDefinitions="*,12,*,12,*">
+            <Button Grid.Column="0"
+                    Classes="PrimaryButton"
+                    Content="▶ Start"
+                    Command="{Binding StartPomodoroCommand}"/>
 
-                                    <Button Grid.Column="4"
-                                            Classes="PrimaryButton"
-                                            Content="↺ Reset"
-                                            Command="{Binding ResetPomodoroCommand}"/>
-                                </Grid>
+            <Button Grid.Column="2"
+                    Classes="SecondaryButton"
+                    Content="⏸ Pauza"
+                    Command="{Binding PauzaPomodoroCommand}"/>
 
-                            </StackPanel>
-                        </Border>
+            <Button Grid.Column="4"
+                    Classes="PrimaryButton"
+                    Content="↺ Reset"
+                    Command="{Binding ResetPomodoroCommand}"/>
+        </Grid>
+
+    </StackPanel>
+</Border>
 
                         <Border Background="#FFF4FA"
                                 BorderBrush="#F6B8D5"
