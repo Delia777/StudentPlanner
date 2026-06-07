@@ -98,253 +98,420 @@
             <Setter Property="Foreground" Value="White"/>
         </Style>
 
+        <Style Selector="TabItem">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#7A2E5A"/>
+            <Setter Property="Padding" Value="14,8"/>
+        </Style>
+
     </Window.Styles>
 
-    <ScrollViewer>
-        <StackPanel Margin="24" Spacing="16">
+    <DockPanel>
 
-            <Border Background="#FFD6E8"
-                    Padding="18"
-                    CornerRadius="14">
-                <TextBlock Text="🌸  Student Planner  🌸"
-                           FontSize="34"
-                           FontWeight="Bold"
-                           FontFamily="Segoe Script"
-                           Foreground="#7A2E5A"
-                           HorizontalAlignment="Center"/>
-            </Border>
+        <Border DockPanel.Dock="Top"
+                Background="#FFD6E8"
+                Padding="18"
+                CornerRadius="0,0,18,18">
+            <TextBlock Text="🌸  Student Planner  🌸"
+                       FontSize="34"
+                       FontWeight="Bold"
+                       FontFamily="Segoe Script"
+                       Foreground="#7A2E5A"
+                       HorizontalAlignment="Center"/>
+        </Border>
 
-            <Border Background="#FFF4FA"
-                    BorderBrush="#F6B8D5"
-                    BorderThickness="1"
-                    Padding="18"
-                    CornerRadius="16">
-                <StackPanel Spacing="12">
+        <TabControl Margin="24"
+                    Background="#FFF8FC">
 
-                    <TextBlock Text="🌸 Adauga task nou"
-                               FontSize="20"
-                               FontWeight="Bold"
-                               Foreground="#7A2E5A"/>
+            <TabItem Header="📝 Task Planner">
+                <ScrollViewer>
+                    <StackPanel Spacing="16" Margin="0,18,0,0">
 
-                    <TextBox PlaceholderText="▣   Titlu task"
-                             Text="{Binding TitluNou}"
-                             Height="42"/>
-
-                    <TextBox PlaceholderText="📖   Materie"
-                             Text="{Binding MaterieNoua}"
-                             Height="42"/>
-
-                    <Grid ColumnDefinitions="*,12,*">
-                        <DatePicker Grid.Column="0"
-                                    SelectedDate="{Binding DeadlineNou}"
-                                    Height="42"/>
-
-                        <ComboBox Grid.Column="2"
-                                  ItemsSource="{Binding Statusuri}"
-                                  SelectedItem="{Binding StatusNou}"
-                                  Height="42"/>
-                    </Grid>
-
-                    <TextBox PlaceholderText="✎   Descriere / notite"
-                             Text="{Binding DescriereNoua}"
-                             AcceptsReturn="True"
-                             Height="86"/>
-
-                    <Button Classes="PrimaryButton"
-                            Content="♡   Adauga task"
-                            Command="{Binding AdaugaTaskCommand}"
-                            HorizontalAlignment="Stretch"/>
-                </StackPanel>
-            </Border>
-
-            <Border Background="#FFF4FA"
-                    BorderBrush="#F6B8D5"
-                    BorderThickness="1"
-                    Padding="18"
-                    CornerRadius="16">
-                <StackPanel Spacing="14">
-
-                    <TextBlock Text="📊 Dashboard"
-                               FontSize="20"
-                               FontWeight="Bold"
-                               Foreground="#7A2E5A"/>
-
-                    <Grid ColumnDefinitions="*,14,*,14,*">
-
-                        <Border Grid.Column="0"
-                                Background="#FFF8FC"
-                                BorderBrush="#F4B4D3"
+                        <Border Background="#FFF4FA"
+                                BorderBrush="#F6B8D5"
                                 BorderThickness="1"
-                                Padding="16"
-                                CornerRadius="12">
-                            <StackPanel Spacing="4">
-                                <TextBlock Text="📋  Total taskuri"
-                                           FontSize="16"
-                                           FontWeight="Bold"
-                                           Foreground="#E7549A"/>
-                                <TextBlock Text="{Binding TotalTaskuri}"
-                                           FontSize="26"
+                                Padding="18"
+                                CornerRadius="16">
+                            <StackPanel Spacing="12">
+
+                                <TextBlock Text="🌸 Adauga task nou"
+                                           FontSize="20"
                                            FontWeight="Bold"
                                            Foreground="#7A2E5A"/>
+
+                                <TextBox PlaceholderText="▣   Titlu task"
+                                         Text="{Binding TitluNou}"
+                                         Height="42"/>
+
+                                <TextBox PlaceholderText="📖   Materie"
+                                         Text="{Binding MaterieNoua}"
+                                         Height="42"/>
+
+                                <Grid ColumnDefinitions="*,12,*">
+                                    <DatePicker Grid.Column="0"
+                                                SelectedDate="{Binding DeadlineNou}"
+                                                Height="42"/>
+
+                                    <ComboBox Grid.Column="2"
+                                              ItemsSource="{Binding Statusuri}"
+                                              SelectedItem="{Binding StatusNou}"
+                                              Height="42"/>
+                                </Grid>
+
+                                <TextBox PlaceholderText="✎   Descriere / notite"
+                                         Text="{Binding DescriereNoua}"
+                                         AcceptsReturn="True"
+                                         Height="86"/>
+
+                                <Button Classes="PrimaryButton"
+                                        Content="♡   Adauga task"
+                                        Command="{Binding AdaugaTaskCommand}"
+                                        HorizontalAlignment="Stretch"/>
                             </StackPanel>
                         </Border>
 
-                        <Border Grid.Column="2"
-                                Background="#FCF2FF"
-                                BorderBrush="#D9A6F2"
+                        <Border Background="#FFF4FA"
+                                BorderBrush="#F6B8D5"
                                 BorderThickness="1"
-                                Padding="16"
-                                CornerRadius="12">
-                            <StackPanel Spacing="4">
-                                <TextBlock Text="✅  Finalizate"
-                                           FontSize="16"
-                                           FontWeight="Bold"
-                                           Foreground="#A34ACB"/>
-                                <TextBlock Text="{Binding TaskuriFinalizate}"
-                                           FontSize="26"
+                                Padding="18"
+                                CornerRadius="16">
+                            <StackPanel Spacing="12">
+
+                                <TextBlock Text="🔍 Cautare si filtrare taskuri"
+                                           FontSize="20"
                                            FontWeight="Bold"
                                            Foreground="#7A2E5A"/>
+
+                                <Grid ColumnDefinitions="*,12,*">
+                                    <TextBox Grid.Column="0"
+                                             PlaceholderText="Cauta dupa titlu..."
+                                             Text="{Binding TextCautare}"
+                                             Height="42"/>
+
+                                    <ComboBox Grid.Column="2"
+                                              ItemsSource="{Binding StatusuriFiltru}"
+                                              SelectedItem="{Binding FiltruStatus}"
+                                              Height="42"/>
+                                </Grid>
+
                             </StackPanel>
                         </Border>
 
-                        <Border Grid.Column="4"
-                                Background="#FFF9EE"
-                                BorderBrush="#F1C77B"
+                        <Border Background="#FFF4FA"
+                                BorderBrush="#F6B8D5"
                                 BorderThickness="1"
-                                Padding="16"
-                                CornerRadius="12">
-                            <StackPanel Spacing="4">
-                                <TextBlock Text="🕓  Restante"
-                                           FontSize="16"
-                                           FontWeight="Bold"
-                                           Foreground="#C27A13"/>
-                                <TextBlock Text="{Binding TaskuriRestante}"
-                                           FontSize="26"
+                                Padding="18"
+                                CornerRadius="16">
+                            <StackPanel Spacing="12">
+
+                                <TextBlock Text="☷ Lista taskuri"
+                                           FontSize="20"
                                            FontWeight="Bold"
                                            Foreground="#7A2E5A"/>
+
+                                <ListBox ItemsSource="{Binding TasksAfisate}"
+                                         SelectedItem="{Binding TaskSelectat}"
+                                         Height="230"
+                                         Background="#FFF4FA"
+                                         BorderThickness="0">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Background="White"
+                                                    Padding="14"
+                                                    Margin="4"
+                                                    CornerRadius="12">
+                                                <Grid ColumnDefinitions="8,*,55">
+                                                    <Border Grid.Column="0"
+                                                            Background="#EC3F91"
+                                                            CornerRadius="6"/>
+
+                                                    <StackPanel Grid.Column="1"
+                                                                Margin="14,0,0,0"
+                                                                Spacing="4">
+                                                        <TextBlock Text="{Binding Titlu}"
+                                                                   FontSize="16"
+                                                                   FontWeight="Bold"
+                                                                   Foreground="#2F2230"/>
+
+                                                        <TextBlock Text="{Binding Materie}"
+                                                                   FontSize="14"
+                                                                   Foreground="#6B4B5D"/>
+
+                                                        <TextBlock Text="{Binding Deadline, StringFormat='📅 Deadline: {0:dd.MM.yyyy}'}"
+                                                                   FontSize="14"
+                                                                   Foreground="#6B4B5D"/>
+
+                                                        <TextBlock Text="{Binding Status}"
+                                                                   FontSize="14"
+                                                                   FontWeight="Bold"
+                                                                   Foreground="#159947"/>
+
+                                                        <TextBlock Text="{Binding Descriere}"
+                                                                   FontSize="14"
+                                                                   Foreground="#2F2230"/>
+                                                    </StackPanel>
+
+                                                    <Border Grid.Column="2"
+                                                            Width="42"
+                                                            Height="42"
+                                                            BorderBrush="#F4B4D3"
+                                                            BorderThickness="1"
+                                                            CornerRadius="8"
+                                                            HorizontalAlignment="Right"
+                                                            VerticalAlignment="Top">
+                                                        <TextBlock Text="♡"
+                                                                   FontSize="22"
+                                                                   Foreground="#E7549A"
+                                                                   HorizontalAlignment="Center"
+                                                                   VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+
+                                <Grid ColumnDefinitions="*,12,*">
+                                    <Button Grid.Column="0"
+                                            Classes="SecondaryButton"
+                                            Content="✓   Marcheaza Done"
+                                            Command="{Binding MarcheazaDoneCommand}"/>
+
+                                    <Button Grid.Column="2"
+                                            Classes="PrimaryButton"
+                                            Content="🗑   Sterge task"
+                                            Command="{Binding StergeTaskCommand}"/>
+                                </Grid>
+
                             </StackPanel>
                         </Border>
 
-                    </Grid>
-                </StackPanel>
-            </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
 
-            <Border Background="#FFF4FA"
-                    BorderBrush="#F6B8D5"
-                    BorderThickness="1"
-                    Padding="18"
-                    CornerRadius="16">
-                <StackPanel Spacing="12">
+            <TabItem Header="📚 Study Sessions">
+                <ScrollViewer>
+                    <StackPanel Spacing="16" Margin="0,18,0,0">
 
+                        <Border Background="#FFF4FA"
+                                BorderBrush="#F6B8D5"
+                                BorderThickness="1"
+                                Padding="18"
+                                CornerRadius="16">
+                            <StackPanel Spacing="12">
 
-                <Border Background="#FFF4FA"
-        BorderBrush="#F6B8D5"
-        BorderThickness="1"
-        Padding="18"
-        CornerRadius="16">
-    <StackPanel Spacing="12">
+                                <TextBlock Text="📚 Adauga sesiune de invatat"
+                                           FontSize="20"
+                                           FontWeight="Bold"
+                                           Foreground="#7A2E5A"/>
 
-        <TextBlock Text="🔍 Cautare si filtrare"
-                   FontSize="20"
-                   FontWeight="Bold"
-                   Foreground="#7A2E5A"/>
+                                <Grid ColumnDefinitions="*,12,*">
+                                    <TextBox Grid.Column="0"
+                                             PlaceholderText="Materie pentru invatat"
+                                             Text="{Binding MaterieSesiune}"
+                                             Height="42"/>
 
-        <Grid ColumnDefinitions="*,12,*">
-            <TextBox Grid.Column="0"
-                     PlaceholderText="Cauta dupa titlu..."
-                     Text="{Binding TextCautare}"
-                     Height="42"/>
+                                    <TextBox Grid.Column="2"
+                                             PlaceholderText="Durata in minute"
+                                             Text="{Binding DurataMinute}"
+                                             Height="42"/>
+                                </Grid>
 
-            <ComboBox Grid.Column="2"
-                      ItemsSource="{Binding StatusuriFiltru}"
-                      SelectedItem="{Binding FiltruStatus}"
-                      Height="42"/>
-        </Grid>
+                                <DatePicker SelectedDate="{Binding DataSesiune}"
+                                            Height="42"/>
 
-    </StackPanel>
-</Border>
-                    <TextBlock Text="☷ Lista taskuri"
-                               FontSize="20"
-                               FontWeight="Bold"
-                               Foreground="#7A2E5A"/>
+                                <TextBox PlaceholderText="Notite sesiune"
+                                         Text="{Binding NotiteSesiune}"
+                                         AcceptsReturn="True"
+                                         Height="86"/>
 
-                    <ListBox ItemsSource="{Binding TasksAfisate}"
-                             SelectedItem="{Binding TaskSelectat}"
-                             Height="190"
-                             Background="#FFF4FA"
-                             BorderThickness="0">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Border Background="White"
-                                        Padding="14"
-                                        Margin="4"
-                                        CornerRadius="12">
-                                    <Grid ColumnDefinitions="8,*,55">
-                                        <Border Grid.Column="0"
-                                                Background="#EC3F91"
-                                                CornerRadius="6"/>
+                                <Button Classes="PrimaryButton"
+                                        Content="♡   Adauga sesiune"
+                                        Command="{Binding AdaugaSesiuneCommand}"
+                                        HorizontalAlignment="Stretch"/>
 
-                                        <StackPanel Grid.Column="1"
-                                                    Margin="14,0,0,0"
-                                                    Spacing="4">
-                                            <TextBlock Text="{Binding Titlu}"
+                            </StackPanel>
+                        </Border>
+
+                        <Border Background="#FFF4FA"
+                                BorderBrush="#F6B8D5"
+                                BorderThickness="1"
+                                Padding="18"
+                                CornerRadius="16">
+                            <StackPanel Spacing="12">
+
+                                <TextBlock Text="☷ Lista sesiuni"
+                                           FontSize="20"
+                                           FontWeight="Bold"
+                                           Foreground="#7A2E5A"/>
+
+                                <ListBox ItemsSource="{Binding StudySessions}"
+                                         SelectedItem="{Binding SesiuneSelectata}"
+                                         Height="300"
+                                         Background="#FFF4FA"
+                                         BorderThickness="0">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Background="White"
+                                                    Padding="14"
+                                                    Margin="4"
+                                                    CornerRadius="12">
+                                                <StackPanel Spacing="4">
+                                                    <TextBlock Text="{Binding Materie}"
+                                                               FontSize="16"
+                                                               FontWeight="Bold"
+                                                               Foreground="#2F2230"/>
+
+                                                    <TextBlock Text="{Binding DurataMinute, StringFormat='⏱ Durata: {0} minute'}"
+                                                               Foreground="#6B4B5D"/>
+
+                                                    <TextBlock Text="{Binding Data, StringFormat='📅 Data: {0:dd.MM.yyyy}'}"
+                                                               Foreground="#6B4B5D"/>
+
+                                                    <TextBlock Text="{Binding Notite}"
+                                                               Foreground="#2F2230"/>
+                                                </StackPanel>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+
+                                <Button Classes="SecondaryButton"
+                                        Content="🗑   Sterge sesiune"
+                                        Command="{Binding StergeSesiuneCommand}"
+                                        HorizontalAlignment="Stretch"/>
+
+                            </StackPanel>
+                        </Border>
+
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="📊 Dashboard">
+                <ScrollViewer>
+                    <StackPanel Spacing="16" Margin="0,18,0,0">
+
+                        <Border Background="#FFF4FA"
+                                BorderBrush="#F6B8D5"
+                                BorderThickness="1"
+                                Padding="18"
+                                CornerRadius="16">
+                            <StackPanel Spacing="14">
+
+                                <TextBlock Text="📊 Dashboard general"
+                                           FontSize="22"
+                                           FontWeight="Bold"
+                                           Foreground="#7A2E5A"/>
+
+                                <Grid ColumnDefinitions="*,14,*,14,*">
+
+                                    <Border Grid.Column="0"
+                                            Background="#FFF8FC"
+                                            BorderBrush="#F4B4D3"
+                                            BorderThickness="1"
+                                            Padding="16"
+                                            CornerRadius="12">
+                                        <StackPanel Spacing="4">
+                                            <TextBlock Text="📋 Total taskuri"
                                                        FontSize="16"
                                                        FontWeight="Bold"
-                                                       Foreground="#2F2230"/>
-
-                                            <TextBlock Text="{Binding Materie}"
-                                                       FontSize="14"
-                                                       Foreground="#6B4B5D"/>
-
-                                            <TextBlock Text="{Binding Deadline, StringFormat='📅 Deadline: {0:dd.MM.yyyy}'}"
-                                                       FontSize="14"
-                                                       Foreground="#6B4B5D"/>
-
-                                            <TextBlock Text="{Binding Status}"
-                                                       FontSize="14"
+                                                       Foreground="#E7549A"/>
+                                            <TextBlock Text="{Binding TotalTaskuri}"
+                                                       FontSize="30"
                                                        FontWeight="Bold"
-                                                       Foreground="#159947"/>
-
-                                            <TextBlock Text="{Binding Descriere}"
-                                                       FontSize="14"
-                                                       Foreground="#2F2230"/>
+                                                       Foreground="#7A2E5A"/>
                                         </StackPanel>
+                                    </Border>
 
-                                        <Border Grid.Column="2"
-                                                Width="42"
-                                                Height="42"
-                                                BorderBrush="#F4B4D3"
-                                                BorderThickness="1"
-                                                CornerRadius="8"
-                                                HorizontalAlignment="Right"
-                                                VerticalAlignment="Top">
-                                            <TextBlock Text="♡"
-                                                       FontSize="22"
-                                                       Foreground="#E7549A"
-                                                       HorizontalAlignment="Center"
-                                                       VerticalAlignment="Center"/>
-                                        </Border>
-                                    </Grid>
-                                </Border>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                                    <Border Grid.Column="2"
+                                            Background="#FCF2FF"
+                                            BorderBrush="#D9A6F2"
+                                            BorderThickness="1"
+                                            Padding="16"
+                                            CornerRadius="12">
+                                        <StackPanel Spacing="4">
+                                            <TextBlock Text="✅ Finalizate"
+                                                       FontSize="16"
+                                                       FontWeight="Bold"
+                                                       Foreground="#A34ACB"/>
+                                            <TextBlock Text="{Binding TaskuriFinalizate}"
+                                                       FontSize="30"
+                                                       FontWeight="Bold"
+                                                       Foreground="#7A2E5A"/>
+                                        </StackPanel>
+                                    </Border>
 
-                    <Grid ColumnDefinitions="*,12,*">
-                        <Button Grid.Column="0"
-                                Classes="SecondaryButton"
-                                Content="✓   Marcheaza Done"
-                                Command="{Binding MarcheazaDoneCommand}"/>
+                                    <Border Grid.Column="4"
+                                            Background="#FFF9EE"
+                                            BorderBrush="#F1C77B"
+                                            BorderThickness="1"
+                                            Padding="16"
+                                            CornerRadius="12">
+                                        <StackPanel Spacing="4">
+                                            <TextBlock Text="🕓 Restante"
+                                                       FontSize="16"
+                                                       FontWeight="Bold"
+                                                       Foreground="#C27A13"/>
+                                            <TextBlock Text="{Binding TaskuriRestante}"
+                                                       FontSize="30"
+                                                       FontWeight="Bold"
+                                                       Foreground="#7A2E5A"/>
+                                        </StackPanel>
+                                    </Border>
 
-                        <Button Grid.Column="2"
-                                Classes="PrimaryButton"
-                                Content="🗑   Sterge task"
-                                Command="{Binding StergeTaskCommand}"/>
-                    </Grid>
+                                </Grid>
 
-                </StackPanel>
-            </Border>
+                                <Grid ColumnDefinitions="*,14,*">
 
-        </StackPanel>
-    </ScrollViewer>
+                                    <Border Grid.Column="0"
+                                            Background="#FFF8FC"
+                                            BorderBrush="#F4B4D3"
+                                            BorderThickness="1"
+                                            Padding="16"
+                                            CornerRadius="12">
+                                        <StackPanel Spacing="4">
+                                            <TextBlock Text="📚 Total sesiuni"
+                                                       FontSize="16"
+                                                       FontWeight="Bold"
+                                                       Foreground="#E7549A"/>
+                                            <TextBlock Text="{Binding TotalSesiuni}"
+                                                       FontSize="30"
+                                                       FontWeight="Bold"
+                                                       Foreground="#7A2E5A"/>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border Grid.Column="2"
+                                            Background="#FCF2FF"
+                                            BorderBrush="#D9A6F2"
+                                            BorderThickness="1"
+                                            Padding="16"
+                                            CornerRadius="12">
+                                        <StackPanel Spacing="4">
+                                            <TextBlock Text="⏱ Minute invatate"
+                                                       FontSize="16"
+                                                       FontWeight="Bold"
+                                                       Foreground="#A34ACB"/>
+                                            <TextBlock Text="{Binding TotalMinuteInvatate}"
+                                                       FontSize="30"
+                                                       FontWeight="Bold"
+                                                       Foreground="#7A2E5A"/>
+                                        </StackPanel>
+                                    </Border>
+
+                                </Grid>
+
+                            </StackPanel>
+                        </Border>
+
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+        </TabControl>
+
+    </DockPanel>
 </Window>

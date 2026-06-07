@@ -10,6 +10,7 @@ namespace StudentPlanner.ViewModels;
 public class MainWindowViewModel : ViewModelBase
 {
     private readonly JsonTaskService _jsonService = new JsonTaskService();
+    private readonly JsonStudySessionService _studyService = new JsonStudySessionService();
 
     private string _titluNou = string.Empty;
     private string _materieNoua = string.Empty;
@@ -20,8 +21,16 @@ public class MainWindowViewModel : ViewModelBase
     private string _textCautare = string.Empty;
     private string _filtruStatus = "Toate";
 
+    private string _materieSesiune = string.Empty;
+    private int _durataMinute = 25;
+    private DateTimeOffset? _dataSesiune = DateTimeOffset.Now;
+    private string _notiteSesiune = string.Empty;
+    private StudySession? _sesiuneSelectata;
+
     public ObservableCollection<TaskItem> Tasks { get; set; }
     public ObservableCollection<TaskItem> TasksAfisate { get; set; } = new();
+
+    public ObservableCollection<StudySession> StudySessions { get; set; }
 
     public ObservableCollection<string> Statusuri { get; set; } =
         new ObservableCollection<string> { "To Do", "In Progress", "Done" };
@@ -32,6 +41,9 @@ public class MainWindowViewModel : ViewModelBase
     public RelayCommand AdaugaTaskCommand { get; }
     public RelayCommand StergeTaskCommand { get; }
     public RelayCommand MarcheazaDoneCommand { get; }
+
+    public RelayCommand AdaugaSesiuneCommand { get; }
+    public RelayCommand StergeSesiuneCommand { get; }
 
     public string TitluNou
     {
@@ -89,17 +101,54 @@ public class MainWindowViewModel : ViewModelBase
         }
     }
 
+    public string MaterieSesiune
+    {
+        get => _materieSesiune;
+        set => SetProperty(ref _materieSesiune, value);
+    }
+
+    public int DurataMinute
+    {
+        get => _durataMinute;
+        set => SetProperty(ref _durataMinute, value);
+    }
+
+    public DateTimeOffset? DataSesiune
+    {
+        get => _dataSesiune;
+        set => SetProperty(ref _dataSesiune, value);
+    }
+
+    public string NotiteSesiune
+    {
+        get => _notiteSesiune;
+        set => SetProperty(ref _notiteSesiune, value);
+    }
+
+    public StudySession? SesiuneSelectata
+    {
+        get => _sesiuneSelectata;
+        set => SetProperty(ref _sesiuneSelectata, value);
+    }
+
     public int TotalTaskuri => Tasks.Count;
     public int TaskuriFinalizate => Tasks.Count(t => t.Status == "Done");
     public int TaskuriRestante => Tasks.Count(t => t.Status != "Done");
 
+    public int TotalSesiuni => StudySessions.Count;
+    public int TotalMinuteInvatate => StudySessions.Sum(s => s.DurataMinute);
+
     public MainWindowViewModel()
     {
         Tasks = new ObservableCollection<TaskItem>(_jsonService.LoadTasks());
+        StudySessions = new ObservableCollection<StudySession>(_studyService.LoadSessions());
 
         AdaugaTaskCommand = new RelayCommand(AdaugaTask);
         StergeTaskCommand = new RelayCommand(StergeTask);
         MarcheazaDoneCommand = new RelayCommand(MarcheazaDone);
+
+        AdaugaSesiuneCommand = new RelayCommand(AdaugaSesiune);
+        StergeSesiuneCommand = new RelayCommand(StergeSesiune);
 
         ActualizeazaListaAfisata();
     }
@@ -119,8 +168,8 @@ public class MainWindowViewModel : ViewModelBase
         });
 
         SalveazaTaskuri();
-        ReseteazaCampuri();
-        ActualizeazaDashboard();
+        ReseteazaCampuriTask();
+        ActualizeazaDashboardTaskuri();
         ActualizeazaListaAfisata();
     }
 
@@ -133,7 +182,7 @@ public class MainWindowViewModel : ViewModelBase
         TaskSelectat = null;
 
         SalveazaTaskuri();
-        ActualizeazaDashboard();
+        ActualizeazaDashboardTaskuri();
         ActualizeazaListaAfisata();
     }
 
@@ -145,8 +194,38 @@ public class MainWindowViewModel : ViewModelBase
         TaskSelectat.Status = "Done";
 
         SalveazaTaskuri();
-        ActualizeazaDashboard();
+        ActualizeazaDashboardTaskuri();
         ActualizeazaListaAfisata();
+    }
+
+    private void AdaugaSesiune()
+    {
+        if (string.IsNullOrWhiteSpace(MaterieSesiune) || DurataMinute <= 0)
+            return;
+
+        StudySessions.Add(new StudySession
+        {
+            Materie = MaterieSesiune,
+            DurataMinute = DurataMinute,
+            Data = DataSesiune?.DateTime ?? DateTime.Now,
+            Notite = NotiteSesiune
+        });
+
+        SalveazaSesiuni();
+        ReseteazaCampuriSesiune();
+        ActualizeazaDashboardSesiuni();
+    }
+
+    private void StergeSesiune()
+    {
+        if (SesiuneSelectata == null)
+            return;
+
+        StudySessions.Remove(SesiuneSelectata);
+        SesiuneSelectata = null;
+
+        SalveazaSesiuni();
+        ActualizeazaDashboardSesiuni();
     }
 
     private void ActualizeazaListaAfisata()
@@ -172,7 +251,7 @@ public class MainWindowViewModel : ViewModelBase
         }
     }
 
-    private void ReseteazaCampuri()
+    private void ReseteazaCampuriTask()
     {
         TitluNou = string.Empty;
         MaterieNoua = string.Empty;
@@ -181,15 +260,34 @@ public class MainWindowViewModel : ViewModelBase
         DeadlineNou = DateTimeOffset.Now;
     }
 
-    private void ActualizeazaDashboard()
+    private void ReseteazaCampuriSesiune()
+    {
+        MaterieSesiune = string.Empty;
+        DurataMinute = 25;
+        DataSesiune = DateTimeOffset.Now;
+        NotiteSesiune = string.Empty;
+    }
+
+    private void ActualizeazaDashboardTaskuri()
     {
         OnPropertyChanged(nameof(TotalTaskuri));
         OnPropertyChanged(nameof(TaskuriFinalizate));
         OnPropertyChanged(nameof(TaskuriRestante));
     }
 
+    private void ActualizeazaDashboardSesiuni()
+    {
+        OnPropertyChanged(nameof(TotalSesiuni));
+        OnPropertyChanged(nameof(TotalMinuteInvatate));
+    }
+
     private void SalveazaTaskuri()
     {
         _jsonService.SaveTasks(Tasks.ToList());
+    }
+
+    private void SalveazaSesiuni()
+    {
+        _studyService.SaveSessions(StudySessions.ToList());
     }
 }
