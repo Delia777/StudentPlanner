@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using StudentPlanner.Models;
 using StudentPlanner.Services;
@@ -11,6 +12,10 @@ public class MainWindowViewModel : ViewModelBase
 {
     private readonly JsonTaskService _jsonService = new JsonTaskService();
     private readonly JsonStudySessionService _studyService = new JsonStudySessionService();
+
+    private readonly DispatcherTimer _pomodoroTimer = new DispatcherTimer();
+    private int _pomodoroSecunde = 25 * 60;
+    private string _pomodoroStatus = "Gata de start";
 
     private string _titluNou = string.Empty;
     private string _materieNoua = string.Empty;
@@ -29,7 +34,6 @@ public class MainWindowViewModel : ViewModelBase
 
     public ObservableCollection<TaskItem> Tasks { get; set; }
     public ObservableCollection<TaskItem> TasksAfisate { get; set; } = new();
-
     public ObservableCollection<StudySession> StudySessions { get; set; }
 
     public ObservableCollection<string> Statusuri { get; set; } =
@@ -44,6 +48,10 @@ public class MainWindowViewModel : ViewModelBase
 
     public RelayCommand AdaugaSesiuneCommand { get; }
     public RelayCommand StergeSesiuneCommand { get; }
+
+    public RelayCommand StartPomodoroCommand { get; }
+    public RelayCommand PauzaPomodoroCommand { get; }
+    public RelayCommand ResetPomodoroCommand { get; }
 
     public string TitluNou
     {
@@ -131,6 +139,14 @@ public class MainWindowViewModel : ViewModelBase
         set => SetProperty(ref _sesiuneSelectata, value);
     }
 
+    public string PomodoroDisplay => $"{_pomodoroSecunde / 60:00}:{_pomodoroSecunde % 60:00}";
+
+    public string PomodoroStatus
+    {
+        get => _pomodoroStatus;
+        set => SetProperty(ref _pomodoroStatus, value);
+    }
+
     public int TotalTaskuri => Tasks.Count;
     public int TaskuriFinalizate => Tasks.Count(t => t.Status == "Done");
     public int TaskuriRestante => Tasks.Count(t => t.Status != "Done");
@@ -149,6 +165,13 @@ public class MainWindowViewModel : ViewModelBase
 
         AdaugaSesiuneCommand = new RelayCommand(AdaugaSesiune);
         StergeSesiuneCommand = new RelayCommand(StergeSesiune);
+
+        StartPomodoroCommand = new RelayCommand(StartPomodoro);
+        PauzaPomodoroCommand = new RelayCommand(PauzaPomodoro);
+        ResetPomodoroCommand = new RelayCommand(ResetPomodoro);
+
+        _pomodoroTimer.Interval = TimeSpan.FromSeconds(1);
+        _pomodoroTimer.Tick += PomodoroTick;
 
         ActualizeazaListaAfisata();
     }
@@ -226,6 +249,45 @@ public class MainWindowViewModel : ViewModelBase
 
         SalveazaSesiuni();
         ActualizeazaDashboardSesiuni();
+    }
+
+    private void StartPomodoro()
+    {
+        if (_pomodoroSecunde <= 0)
+            _pomodoroSecunde = 25 * 60;
+
+        PomodoroStatus = "Timer pornit";
+        _pomodoroTimer.Start();
+        OnPropertyChanged(nameof(PomodoroDisplay));
+    }
+
+    private void PauzaPomodoro()
+    {
+        _pomodoroTimer.Stop();
+        PomodoroStatus = "Timer pe pauza";
+    }
+
+    private void ResetPomodoro()
+    {
+        _pomodoroTimer.Stop();
+        _pomodoroSecunde = 25 * 60;
+        PomodoroStatus = "Gata de start";
+        OnPropertyChanged(nameof(PomodoroDisplay));
+    }
+
+    private void PomodoroTick(object? sender, EventArgs e)
+    {
+        if (_pomodoroSecunde > 0)
+        {
+            _pomodoroSecunde--;
+            OnPropertyChanged(nameof(PomodoroDisplay));
+        }
+
+        if (_pomodoroSecunde == 0)
+        {
+            _pomodoroTimer.Stop();
+            PomodoroStatus = "Sesiune finalizata";
+        }
     }
 
     private void ActualizeazaListaAfisata()
