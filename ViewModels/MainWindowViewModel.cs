@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using StudentPlanner.Models;
 using StudentPlanner.Services;
 
@@ -12,16 +14,26 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public ObservableCollection<TaskItem> Tasks { get; set; }
 
-    public string TitluNou { get; set; } = string.Empty;
-    public string MaterieNoua { get; set; } = string.Empty;
-    public DateTimeOffset? DeadlineNou { get; set; } = DateTimeOffset.Now;
-    public string StatusNou { get; set; } = "To Do";
-    public string DescriereNoua { get; set; } = string.Empty;
-
     public ObservableCollection<string> Statusuri { get; set; } =
         new ObservableCollection<string> { "To Do", "In Progress", "Done" };
 
-    public TaskItem? TaskSelectat { get; set; }
+    [ObservableProperty]
+    private string titluNou = string.Empty;
+
+    [ObservableProperty]
+    private string materieNoua = string.Empty;
+
+    [ObservableProperty]
+    private DateTimeOffset? deadlineNou = DateTimeOffset.Now;
+
+    [ObservableProperty]
+    private string statusNou = "To Do";
+
+    [ObservableProperty]
+    private string descriereNoua = string.Empty;
+
+    [ObservableProperty]
+    private TaskItem? taskSelectat;
 
     public int TotalTaskuri => Tasks.Count;
     public int TaskuriFinalizate => Tasks.Count(t => t.Status == "Done");
@@ -32,7 +44,8 @@ public partial class MainWindowViewModel : ViewModelBase
         Tasks = new ObservableCollection<TaskItem>(_jsonService.LoadTasks());
     }
 
-    public void AdaugaTask()
+    [RelayCommand]
+    private void AdaugaTask()
     {
         if (string.IsNullOrWhiteSpace(TitluNou))
             return;
@@ -47,7 +60,37 @@ public partial class MainWindowViewModel : ViewModelBase
         });
 
         SalveazaTaskuri();
+        ReseteazaCampuri();
+        ActualizeazaDashboard();
+    }
 
+    [RelayCommand]
+    private void StergeTask()
+    {
+        if (TaskSelectat == null)
+            return;
+
+        Tasks.Remove(TaskSelectat);
+        TaskSelectat = null;
+
+        SalveazaTaskuri();
+        ActualizeazaDashboard();
+    }
+
+    [RelayCommand]
+    private void MarcheazaDone()
+    {
+        if (TaskSelectat == null)
+            return;
+
+        TaskSelectat.Status = "Done";
+
+        SalveazaTaskuri();
+        ActualizeazaDashboard();
+    }
+
+    private void ReseteazaCampuri()
+    {
         TitluNou = string.Empty;
         MaterieNoua = string.Empty;
         DescriereNoua = string.Empty;
@@ -55,22 +98,11 @@ public partial class MainWindowViewModel : ViewModelBase
         DeadlineNou = DateTimeOffset.Now;
     }
 
-    public void StergeTask()
+    private void ActualizeazaDashboard()
     {
-        if (TaskSelectat == null)
-            return;
-
-        Tasks.Remove(TaskSelectat);
-        SalveazaTaskuri();
-    }
-
-    public void MarcheazaDone()
-    {
-        if (TaskSelectat == null)
-            return;
-
-        TaskSelectat.Status = "Done";
-        SalveazaTaskuri();
+        OnPropertyChanged(nameof(TotalTaskuri));
+        OnPropertyChanged(nameof(TaskuriFinalizate));
+        OnPropertyChanged(nameof(TaskuriRestante));
     }
 
     private void SalveazaTaskuri()
