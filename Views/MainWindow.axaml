@@ -236,12 +236,39 @@
                     CornerRadius="16">
                 <StackPanel Spacing="12">
 
+
+                <Border Background="#FFF4FA"
+        BorderBrush="#F6B8D5"
+        BorderThickness="1"
+        Padding="18"
+        CornerRadius="16">
+    <StackPanel Spacing="12">
+
+        <TextBlock Text="🔍 Cautare si filtrare"
+                   FontSize="20"
+                   FontWeight="Bold"
+                   Foreground="#7A2E5A"/>
+
+        <Grid ColumnDefinitions="*,12,*">
+            <TextBox Grid.Column="0"
+                     PlaceholderText="Cauta dupa titlu..."
+                     Text="{Binding TextCautare}"
+                     Height="42"/>
+
+            <ComboBox Grid.Column="2"
+                      ItemsSource="{Binding StatusuriFiltru}"
+                      SelectedItem="{Binding FiltruStatus}"
+                      Height="42"/>
+        </Grid>
+
+    </StackPanel>
+</Border>
                     <TextBlock Text="☷ Lista taskuri"
                                FontSize="20"
                                FontWeight="Bold"
                                Foreground="#7A2E5A"/>
 
-                    <ListBox ItemsSource="{Binding Tasks}"
+                    <ListBox ItemsSource="{Binding TasksAfisate}"
                              SelectedItem="{Binding TaskSelectat}"
                              Height="190"
                              Background="#FFF4FA"

@@ -1,39 +1,93 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using StudentPlanner.Models;
 using StudentPlanner.Services;
 
 namespace StudentPlanner.ViewModels;
 
-public partial class MainWindowViewModel : ViewModelBase
+public class MainWindowViewModel : ViewModelBase
 {
     private readonly JsonTaskService _jsonService = new JsonTaskService();
 
+    private string _titluNou = string.Empty;
+    private string _materieNoua = string.Empty;
+    private DateTimeOffset? _deadlineNou = DateTimeOffset.Now;
+    private string _statusNou = "To Do";
+    private string _descriereNoua = string.Empty;
+    private TaskItem? _taskSelectat;
+    private string _textCautare = string.Empty;
+    private string _filtruStatus = "Toate";
+
     public ObservableCollection<TaskItem> Tasks { get; set; }
+    public ObservableCollection<TaskItem> TasksAfisate { get; set; } = new();
 
     public ObservableCollection<string> Statusuri { get; set; } =
         new ObservableCollection<string> { "To Do", "In Progress", "Done" };
 
-    [ObservableProperty]
-    private string titluNou = string.Empty;
+    public ObservableCollection<string> StatusuriFiltru { get; set; } =
+        new ObservableCollection<string> { "Toate", "To Do", "In Progress", "Done" };
 
-    [ObservableProperty]
-    private string materieNoua = string.Empty;
+    public RelayCommand AdaugaTaskCommand { get; }
+    public RelayCommand StergeTaskCommand { get; }
+    public RelayCommand MarcheazaDoneCommand { get; }
 
-    [ObservableProperty]
-    private DateTimeOffset? deadlineNou = DateTimeOffset.Now;
+    public string TitluNou
+    {
+        get => _titluNou;
+        set => SetProperty(ref _titluNou, value);
+    }
 
-    [ObservableProperty]
-    private string statusNou = "To Do";
+    public string MaterieNoua
+    {
+        get => _materieNoua;
+        set => SetProperty(ref _materieNoua, value);
+    }
 
-    [ObservableProperty]
-    private string descriereNoua = string.Empty;
+    public DateTimeOffset? DeadlineNou
+    {
+        get => _deadlineNou;
+        set => SetProperty(ref _deadlineNou, value);
+    }
 
-    [ObservableProperty]
-    private TaskItem? taskSelectat;
+    public string StatusNou
+    {
+        get => _statusNou;
+        set => SetProperty(ref _statusNou, value);
+    }
+
+    public string DescriereNoua
+    {
+        get => _descriereNoua;
+        set => SetProperty(ref _descriereNoua, value);
+    }
+
+    public TaskItem? TaskSelectat
+    {
+        get => _taskSelectat;
+        set => SetProperty(ref _taskSelectat, value);
+    }
+
+    public string TextCautare
+    {
+        get => _textCautare;
+        set
+        {
+            SetProperty(ref _textCautare, value);
+            ActualizeazaListaAfisata();
+        }
+    }
+
+    public string FiltruStatus
+    {
+        get => _filtruStatus;
+        set
+        {
+            SetProperty(ref _filtruStatus, value);
+            ActualizeazaListaAfisata();
+        }
+    }
 
     public int TotalTaskuri => Tasks.Count;
     public int TaskuriFinalizate => Tasks.Count(t => t.Status == "Done");
@@ -42,9 +96,14 @@ public partial class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel()
     {
         Tasks = new ObservableCollection<TaskItem>(_jsonService.LoadTasks());
+
+        AdaugaTaskCommand = new RelayCommand(AdaugaTask);
+        StergeTaskCommand = new RelayCommand(StergeTask);
+        MarcheazaDoneCommand = new RelayCommand(MarcheazaDone);
+
+        ActualizeazaListaAfisata();
     }
 
-    [RelayCommand]
     private void AdaugaTask()
     {
         if (string.IsNullOrWhiteSpace(TitluNou))
@@ -62,9 +121,9 @@ public partial class MainWindowViewModel : ViewModelBase
         SalveazaTaskuri();
         ReseteazaCampuri();
         ActualizeazaDashboard();
+        ActualizeazaListaAfisata();
     }
 
-    [RelayCommand]
     private void StergeTask()
     {
         if (TaskSelectat == null)
@@ -75,9 +134,9 @@ public partial class MainWindowViewModel : ViewModelBase
 
         SalveazaTaskuri();
         ActualizeazaDashboard();
+        ActualizeazaListaAfisata();
     }
 
-    [RelayCommand]
     private void MarcheazaDone()
     {
         if (TaskSelectat == null)
@@ -87,6 +146,30 @@ public partial class MainWindowViewModel : ViewModelBase
 
         SalveazaTaskuri();
         ActualizeazaDashboard();
+        ActualizeazaListaAfisata();
+    }
+
+    private void ActualizeazaListaAfisata()
+    {
+        var rezultate = Tasks.AsEnumerable();
+
+        if (!string.IsNullOrWhiteSpace(TextCautare))
+        {
+            rezultate = rezultate.Where(t =>
+                t.Titlu.Contains(TextCautare, StringComparison.OrdinalIgnoreCase));
+        }
+
+        if (FiltruStatus != "Toate")
+        {
+            rezultate = rezultate.Where(t => t.Status == FiltruStatus);
+        }
+
+        TasksAfisate.Clear();
+
+        foreach (var task in rezultate)
+        {
+            TasksAfisate.Add(task);
+        }
     }
 
     private void ReseteazaCampuri()
